@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+    api:
+        build:
+            context: ./api
+            dockerfile: ../compose/api/Dockerfile
+        volumes:
+            - ./api:/app
+            - /app/node_modules
+        env_file:
+            - ./api/local.env
+        ports:
+            - "3000:3000"
+        networks:
+            - testnetwork
+        # depends_on:
+        #     - db
+        command: ['npm', 'start']
+    # webapp:
+
+    # db:
+
+# volumes:
+
+networks:
+    testnetwork: {}
