@@ -14,14 +14,22 @@ services:
             - "3000:3000"
         networks:
             - testnetwork
-        # depends_on:
-        #     - db
+        depends_on:
+            - db
         command: ['npm', 'start']
     # webapp:
 
-    # db:
+    db:
+        image: mongo:4.2-bionic
+        volumes:
+            - mongo_data:/data/db
+        env_file:
+            - ./api/local.env
+        networks:
+            - testnetwork
 
-# volumes:
+volumes:
+    mongo_data: {}
 
 networks:
     testnetwork: {}
