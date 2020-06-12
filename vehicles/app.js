@@ -37,7 +37,7 @@ app.use(function(err, req, res, next) {
   
   let message = "General error"
   let status = 500
-  
+  console.log(err)
   if (err.name === 'ValidationError' || err.name === 'MongoError' ) {
     status = 400
     message = err.toString()

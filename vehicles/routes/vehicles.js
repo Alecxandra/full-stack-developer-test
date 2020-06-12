@@ -1,9 +1,77 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const { models } = require('../models');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+/* POST agregar un vehículo */
+router.post('/', async function(req, res, next) {
+  let { licensePlate, type } = req.body
 
-module.exports = router;
+  try {
+
+    /* Se obtiene el vehículo con el código recibido */
+    let query = models.VehicleType.findOne({
+      code: type
+    })
+
+    let vehicleType = await query.exec()
+
+    if (!vehicleType) {
+      res.status(404).json({msg: "Vehicle type not found"})
+    }
+
+    let vehicle = new models.Vehicle({
+      licensePlate,
+      type: vehicleType._id,
+    })
+
+    await vehicle.save()
+
+    let result = {
+      id: vehicle._id,
+      licensePlate: vehicle.licensePlate,
+      type: {
+        id: vehicleType._id,
+        code: vehicleType.code,
+        name: vehicleType.name,
+      }
+    }
+
+    res.status(200).json(result)
+
+  } catch (error) {
+    next(error, req, res, next)
+  }
+
+})
+
+router.get('/:licensePlate', async function(req, res, next) {
+  try {
+
+    let query = models.Vehicle.findOne({
+      licensePlate: req.params.licensePlate
+    }).populate('type')
+
+    let vehicle = await query.exec()
+
+    if (!vehicle) {
+      res.status(404).json({msg: "Vehicle not found"})
+    }
+    
+    let result = {
+      id: vehicle._id,
+      licensePlate: vehicle.licensePlate,
+      type: {
+        id: vehicle.type._id,
+        code: vehicle.type.code,
+        name: vehicle.type.name,
+      }
+    }
+
+    res.status(200).json(result)
+
+  } catch (error) {
+    next(error, req, res, next)
+  }
+})
+
+module.exports = router

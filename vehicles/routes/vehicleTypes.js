@@ -16,6 +16,7 @@ router.post('/', async function(req, res, next) {
     await vehicleType.save()
 
     res.status(200).json({
+      id: vehicleType._id,
       code: vehicleType.code,
       name: vehicleType.name,
     })
@@ -46,4 +47,4 @@ router.get('/', async function(req, res, next) {
   }
 })
 
-module.exports = router;
+module.exports = router
