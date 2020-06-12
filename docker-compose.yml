@@ -17,6 +17,52 @@ services:
         depends_on:
             - vehicles_db
         command: ['npm', 'start']
+    
+    parking_lots:
+        build:
+            context: ./parking_lots
+            dockerfile: ../compose/parking_lots/Dockerfile
+        volumes:
+            - ./parking_lots:/app
+            - /app/node_modules
+        env_file:
+            - ./parking_lots/local.env
+        ports:
+            - "3001:3000"
+        networks:
+            - testnetwork
+        depends_on:
+            - parkinglots_db
+        command: ['npm', 'start']
+    
+    tariffs:
+        build:
+            context: ./tariffs
+            dockerfile: ../compose/tariffs/Dockerfile
+        volumes:
+            - /var/www/vendor/
+            - ./tariffs/:/var/www
+            - ./tariffs/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        working_dir: /var/www
+        env_file:
+            - ./tariffs/local.env
+        networks:
+            - testnetwork
+        depends_on:
+            - tariffs_db
+
+    tariffs_ws:
+        volumes:
+            - ./tariffs:/var/www
+            - ./tariffs/nginx/conf.d/:/etc/nginx/conf.d/
+        image: nginx:alpine
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - tariffs
+        networks:
+            - testnetwork
 
     vehicles_db: &db
         image: mongo:4.2-bionic

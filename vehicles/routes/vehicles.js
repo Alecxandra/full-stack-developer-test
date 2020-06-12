@@ -8,7 +8,12 @@ router.post('/', async function(req, res, next) {
 
   try {
 
-    /* Se obtiene el vehículo con el código recibido */
+    if (!type) {
+      res.status(400).json({msg: "Type is required"})
+      return
+    }
+
+    /* Se obtiene el tipo de vehículo con el código recibido */
     let query = models.VehicleType.findOne({
       code: type
     })
@@ -17,6 +22,7 @@ router.post('/', async function(req, res, next) {
 
     if (!vehicleType) {
       res.status(404).json({msg: "Vehicle type not found"})
+      return
     }
 
     let vehicle = new models.Vehicle({
