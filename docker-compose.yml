@@ -1,35 +1,50 @@
 version: "3"
 
 services:
-    api:
+    vehicles:
         build:
-            context: ./api
-            dockerfile: ../compose/api/Dockerfile
+            context: ./vehicles
+            dockerfile: ../compose/vehicles/Dockerfile
         volumes:
-            - ./api:/app
+            - ./vehicles:/app
             - /app/node_modules
         env_file:
-            - ./api/local.env
+            - ./vehicles/local.env
         ports:
             - "3000:3000"
         networks:
             - testnetwork
         depends_on:
-            - db
+            - vehicles_db
         command: ['npm', 'start']
-    # webapp:
 
-    db:
+    vehicles_db: &db
         image: mongo:4.2-bionic
         volumes:
-            - mongo_data:/data/db
+            - vehicles_data:/data/db
         env_file:
-            - ./api/local.env
+            - ./vehicles/local.env
         networks:
             - testnetwork
 
+    tariffs_db:
+        <<: *db
+        volumes:
+            - tariffs_data:/data/db
+        env_file:
+            - ./tariffs/local.env
+    
+    parkinglots_db:
+        <<: *db
+        volumes:
+            - parkinglots_data:/data/db
+        env_file:
+            - ./parking_lots/local.env
+
 volumes:
-    mongo_data: {}
+    vehicles_data: {}
+    tariffs_data: {}
+    parkinglots_data: {}
 
 networks:
     testnetwork: {}

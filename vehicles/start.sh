@@ -1,3 +1,3 @@
 #!/bin/sh
-export DEBUG=api:*
+export DEBUG=vehicles:*
 # /app/node_modules/.bin/nodemon -L ./bin/www
