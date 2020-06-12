@@ -7,7 +7,10 @@ const vehicleSchema = new mongoose.Schema(
             unique: true,
             required: true,
             index: true,
-        }    
+        },
+        type: {
+            type: mongoose.Schema.Types.ObjectId, ref: 'VehicleType'
+        },    
     },
     { timestamps: true },
 )
