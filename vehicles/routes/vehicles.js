@@ -52,7 +52,7 @@ router.post('/', async function(req, res, next) {
 
 router.get('/:licensePlate', async function(req, res, next) {
   try {
-
+    console.log("HOLIWISSSSS")
     let query = models.Vehicle.findOne({
       licensePlate: req.params.licensePlate
     }).populate('type')
@@ -61,6 +61,7 @@ router.get('/:licensePlate', async function(req, res, next) {
 
     if (!vehicle) {
       res.status(404).json({msg: "Vehicle not found"})
+      return
     }
     
     let result = {

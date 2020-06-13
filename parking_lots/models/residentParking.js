@@ -4,12 +4,15 @@ const residentParkingSchema = new mongoose.Schema(
     {
         licensePlate: {
             type: String,
+            unique: true,
             required: true,
             index: true,
         },
-        entryDate: {
-
-        },    
+        parkingTime: {
+           type: Number,
+           required: true,
+           default: 0
+        }
     },
     { timestamps: true },
 )
