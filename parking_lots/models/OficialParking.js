@@ -9,17 +9,17 @@ const oficialParkingSchema = new mongoose.Schema(
             index: true,
         },
         entryTime: {
-           type: Date,
-           required: true,
+            type: Date,
+            required: true,
         },
         departTime: {
             type: Date,
-            required: true, 
+            required: true,
         }
     },
     { timestamps: true },
 )
- 
+
 const OficialParking = mongoose.model('OficialParking', oficialParkingSchema)
- 
+
 module.exports = OficialParking

@@ -9,14 +9,14 @@ const residentParkingSchema = new mongoose.Schema(
             index: true,
         },
         parkingTime: {
-           type: Number,
-           required: true,
-           default: 0
+            type: Number,
+            required: true,
+            default: 0
         }
     },
     { timestamps: true },
 )
- 
+
 const ResidentParking = mongoose.model('ResidentParking', residentParkingSchema)
- 
+
 module.exports = ResidentParking

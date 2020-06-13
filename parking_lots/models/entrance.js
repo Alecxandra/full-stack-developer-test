@@ -8,8 +8,8 @@ const entranceSchema = new mongoose.Schema(
             index: true,
         },
         date: {
-           type: Date,
-           required: true,
+            type: Date,
+            required: true,
         },
         valid: {
             type: Boolean,
@@ -18,7 +18,7 @@ const entranceSchema = new mongoose.Schema(
     },
     { timestamps: true },
 )
- 
+
 const Entrance = mongoose.model('Entrance', entranceSchema)
- 
+
 module.exports = Entrance

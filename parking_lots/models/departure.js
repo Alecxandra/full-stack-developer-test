@@ -13,23 +13,23 @@ const departureSchema = new mongoose.Schema(
             index: true,
         },
         date: {
-           type: Date,
-           required: true,
+            type: Date,
+            required: true,
         }
     },
     { timestamps: true },
 )
 
-departureSchema.methods.postActions = async function(validEntrance) {
+departureSchema.methods.postActions = async function (validEntrance) {
     // Se identifica el tipo del vehículo
-    
+
     try {
-        
+
         let licensePlate = this.licensePlate
         let res = await axios.get(`http://vehicles:3000/vehicles/${licensePlate}`)
         let vehicle = res.data
-    
-        if ( vehicle.type.code === CODE_RESIDENT ) {
+
+        if (vehicle.type.code === CODE_RESIDENT) {
             // Se acumula el tiempo que lleva estacionado
 
             // Tiempo transcurrido entre la ultima estancia (entrada - salida)
@@ -38,13 +38,13 @@ departureSchema.methods.postActions = async function(validEntrance) {
             let elapsedTime = moment.duration(departureDate.diff(entranceDate)).asMinutes()
 
             let conditions = { licensePlate }
-            let update = { $inc: { parkingTime: elapsedTime }}
-         
+            let update = { $inc: { parkingTime: elapsedTime } }
+
             let query = mongoose.model('ResidentParking').updateOne(conditions, update);
             let residentParking = await query.exec()
 
             // Si el registro no existe, se crea
-            if ( residentParking.nModified == 0 ) {
+            if (residentParking.nModified == 0) {
                 const ResidentParking = mongoose.model('ResidentParking')
 
                 let residentParking = new ResidentParking({
@@ -55,10 +55,11 @@ departureSchema.methods.postActions = async function(validEntrance) {
                 await residentParking.save()
             }
 
-        } else if ( vehicle.type.code === CODE_OFICIAL ) {
+        } else if (vehicle.type.code === CODE_OFICIAL) {
+            console.log("entro oficial")
             // Se asocia la estancia (hora de entrada y hora de salida) al vehículo
             const OficialParking = mongoose.model('OficialParking')
-            
+
             let oficialParking = new OficialParking({
                 licensePlate,
                 entryTime: validEntrance.date,
@@ -69,21 +70,21 @@ departureSchema.methods.postActions = async function(validEntrance) {
         }
 
     } catch (err) {
-          // Vehículo no residente
-          if ( err.response && err.response.status === 404 ) {
+        // Vehículo no residente
+        if (err.response && err.response.status === 404) {
 
             // Se obtiene la tarifa de cobro para no residentes
             try {
-                let res = await axios.get(`http://tariffs:80/api/tariff/${CODE_NO_RES}`)
-                console.log(res)
+                let res = await axios.get("http://localhost:80/api/tariffs/no_res")
+                console.log(res.data)
 
-            } catch (err){
+            } catch (err) {
                 console.log(err)
             }
         }
-    } 
+    }
 }
 
 const Departure = mongoose.model('Departure', departureSchema)
- 
+
 module.exports = Departure
