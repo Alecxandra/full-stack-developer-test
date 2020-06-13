@@ -23,6 +23,13 @@ const departureSchema = new mongoose.Schema(
 departureSchema.methods.postActions = async function (validEntrance) {
     // Se identifica el tipo del vehículo
 
+    let result = {}
+
+    // Tiempo transcurrido entre la ultima estancia (entrada - salida)
+    let entranceDate = moment(validEntrance.date)
+    let departureDate = moment(this.date)
+    let elapsedTime = moment.duration(departureDate.diff(entranceDate)).asMinutes()
+
     try {
 
         let licensePlate = this.licensePlate
@@ -31,11 +38,6 @@ departureSchema.methods.postActions = async function (validEntrance) {
 
         if (vehicle.type.code === CODE_RESIDENT) {
             // Se acumula el tiempo que lleva estacionado
-
-            // Tiempo transcurrido entre la ultima estancia (entrada - salida)
-            let entranceDate = moment(validEntrance.date)
-            let departureDate = moment(this.date)
-            let elapsedTime = moment.duration(departureDate.diff(entranceDate)).asMinutes()
 
             let conditions = { licensePlate }
             let update = { $inc: { parkingTime: elapsedTime } }
@@ -55,8 +57,9 @@ departureSchema.methods.postActions = async function (validEntrance) {
                 await residentParking.save()
             }
 
+            result['vehicleType'] = CODE_RESIDENT
+
         } else if (vehicle.type.code === CODE_OFICIAL) {
-            console.log("entro oficial")
             // Se asocia la estancia (hora de entrada y hora de salida) al vehículo
             const OficialParking = mongoose.model('OficialParking')
 
@@ -67,6 +70,8 @@ departureSchema.methods.postActions = async function (validEntrance) {
             })
 
             await oficialParking.save()
+
+            result['vehicleType'] = CODE_OFICIAL
         }
 
     } catch (err) {
@@ -75,14 +80,20 @@ departureSchema.methods.postActions = async function (validEntrance) {
 
             // Se obtiene la tarifa de cobro para no residentes
             try {
-                let res = await axios.get("http://localhost:80/api/tariffs/no_res")
-                console.log(res.data)
+                let res = await axios.get(`http://tariffs_ws/api/tariffs/${CODE_NO_RES}`)
+                let price = res.data.price
+                let payment = (elapsedTime * price).toFixed(2)
+                result['amountToPay'] = payment
+                result['vehicleType'] = CODE_NO_RES
 
             } catch (err) {
-                console.log(err)
+                result['vehicleType'] = CODE_NO_RES
+                result['amountToPay'] = 'Service not available'
             }
         }
     }
+
+    return result
 }
 
 const Departure = mongoose.model('Departure', departureSchema)

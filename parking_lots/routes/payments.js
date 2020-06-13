@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const moment = require('moment')
+const fs = require('fs').promises
 
 const { models } = require('../models')
 
@@ -15,6 +15,21 @@ router.post('/start-month', async function (req, res, next) {
     await models.ResidentParking.updateMany({}, { parkingTime: 0 })
 
     res.status(200).json({})
+
+  } catch (error) {
+    next(error, req, res, next)
+  }
+
+})
+
+router.get('/residents/generate-report', async function (req, res, next) {
+
+  try {
+    let content = 'holiwis esto es un file'
+    
+    await fs.writeFile('/tmp/residents_payment_report.txt', content);
+
+    res.download('/tmp/file1.txt')
 
   } catch (error) {
     next(error, req, res, next)

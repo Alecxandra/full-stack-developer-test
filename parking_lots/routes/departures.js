@@ -33,18 +33,12 @@ router.post('/', async function (req, res, next) {
 
     // Acciones posteriores al registro de una salida dependiendo del tipo de vehículo
     // TODO el retorno de esto para el response del endpoint
-    await departure.postActions(validEntrance)
+    let result = await departure.postActions(validEntrance)
 
     // Se marca la entrada como no válida
     validEntrance.valid = false
     await validEntrance.save()
-
-    let result = {
-      id: departure._id,
-      licensePlate: departure.licensePlate,
-      date: departure.date
-    }
-
+    
     res.status(200).json(result)
 
   } catch (error) {
