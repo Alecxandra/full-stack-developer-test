@@ -47,4 +47,33 @@ router.get('/', async function(req, res, next) {
   }
 })
 
+/* GET lista tipo de vehículo */
+router.get('/:code', async function(req, res, next) {
+  try {
+
+    let query = models.VehicleType.findOne({
+      code: req.params.code
+    })
+
+    let vehicleType = await query.exec()
+
+
+    if (!vehicleType) {
+      res.status(404).json({msg: "Vehicle type not found"})
+      return
+    }
+    
+    let result =  {
+      id: vehicleType._id,
+      code: vehicleType.code,
+      name: vehicleType.name,
+    }
+
+    res.status(200).json(result)
+
+  } catch (error) {
+    next(error, req, res, next)
+  }
+})
+
 module.exports = router
