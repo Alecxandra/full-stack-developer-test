@@ -10,26 +10,35 @@ COPY . /var/www
 WORKDIR /var/www
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libgmp-dev \
-    libldap2-dev \
-    libwebp-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
-    git \
-    curl \
-    libonig-dev \
-    zlib1g-dev \
-    libicu-dev \
-    libzip-dev \
-    g++
+RUN apt-get update && apt-get install -y wget software-properties-common dirmngr gnupg \
+    && wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - \
+    && echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list \
+    && apt-get update \
+    && apt-get install -y \
+        build-essential \
+        libpng-dev \
+        libgmp-dev \
+        libldap2-dev \
+        libwebp-dev \
+        libjpeg62-turbo-dev \
+        libfreetype6-dev \
+        locales \
+        zip \
+        jpegoptim optipng pngquant gifsicle \
+        vim \
+        unzip \
+        git \
+        curl \
+        libonig-dev \
+        zlib1g-dev \
+        libicu-dev \
+        libzip-dev \
+        g++ \
+        netcat \
+        mongodb-org-shell=4.2.7 mongodb-org-tools=4.2.7 \
+        libcurl4-openssl-dev \
+        pkg-config \
+        libssl-dev
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -44,6 +53,7 @@ RUN docker-php-ext-install gd \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer update \ 
     && composer install \
+    && composer dump-autoload \
     && php artisan key:generate
 
 # Add user for laravel application
