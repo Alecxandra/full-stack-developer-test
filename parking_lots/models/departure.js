@@ -28,7 +28,7 @@ departureSchema.methods.postActions = async function (validEntrance) {
     // Tiempo transcurrido entre la ultima estancia (entrada - salida)
     let entranceDate = moment(validEntrance.date)
     let departureDate = moment(this.date)
-    let elapsedTime = moment.duration(departureDate.diff(entranceDate)).asMinutes()
+    let elapsedTime = Math.ceil(moment.duration(departureDate.diff(entranceDate)).asMinutes())
 
     try {
 
