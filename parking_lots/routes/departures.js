@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const moment = require('moment')
+const passport = require('passport')
 
 const { models } = require('../models')
 
-router.post('/', async function (req, res, next) {
+router.post('/', passport.authenticate('bearer', { session: false }), async function (req, res, next) {
   let { licensePlate } = req.body
 
   try {

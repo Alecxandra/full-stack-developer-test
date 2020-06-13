@@ -3,11 +3,12 @@ const router = express.Router()
 const fs = require('fs').promises
 const table = require('easy-table')
 const axios = require('axios')
+const passport = require('passport')
 const CODE_RESIDENT = "res"
 
 const { models } = require('../models')
 
-router.post('/start-month', async function (req, res, next) {
+router.post('/start-month', passport.authenticate('bearer', { session: false }), async function (req, res, next) {
 
   try {
 
@@ -25,7 +26,7 @@ router.post('/start-month', async function (req, res, next) {
 
 })
 
-router.get('/residents/generate-report', async function (req, res, next) {
+router.get('/residents/generate-report', passport.authenticate('bearer', { session: false }), async function (req, res, next) {
 
   try {
 

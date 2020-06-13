@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport')
 const { models } = require('../models');
 
 
 /* POST agregar tipo de vehículo */
-router.post('/', async function(req, res, next) {
+router.post('/', passport.authenticate('bearer', { session: false }), async function(req, res, next) {
   let { code, name } = req.body
   
   try {
@@ -26,7 +27,7 @@ router.post('/', async function(req, res, next) {
 })
 
 /* GET lista tipo de vehículo */
-router.get('/', async function(req, res, next) {
+router.get('/', passport.authenticate('bearer', { session: false }), async function(req, res, next) {
   try {
 
     let query = models.VehicleType.find({})
@@ -48,7 +49,7 @@ router.get('/', async function(req, res, next) {
 })
 
 /* GET lista tipo de vehículo */
-router.get('/:code', async function(req, res, next) {
+router.get('/:code', passport.authenticate('bearer', { session: false }), async function(req, res, next) {
   try {
 
     let query = models.VehicleType.findOne({

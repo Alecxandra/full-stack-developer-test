@@ -3,6 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var passport = require('passport');
+var BearerStrategy = require('passport-http-bearer').Strategy
+const { models } = require('./models')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -23,6 +26,17 @@ app.use('/users', usersRouter);
 app.use('/entrances', entrancesRouter);
 app.use('/departures', departuresRouter);
 app.use('/payments', paymentsRouter);
+
+// passport bearer strategy
+passport.use(new BearerStrategy(
+  function(token, done) {
+    models.System.findOne({ token: token }, function (err, system) {
+      if (err) { return done(err); }
+      if (!system) { return done(null, false); }
+      return done(null, system, { scope: 'all' });
+    });
+  }
+));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

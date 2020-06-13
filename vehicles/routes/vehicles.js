@@ -1,9 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const { models } = require('../models');
+const express = require('express')
+const router = express.Router()
+const passport = require('passport')
+const { models } = require('../models')
 
 /* POST agregar un vehículo */
-router.post('/', async function(req, res, next) {
+router.post('/', passport.authenticate('bearer', { session: false }), async function(req, res, next) {
   let { licensePlate, type } = req.body
 
   try {
@@ -50,7 +51,7 @@ router.post('/', async function(req, res, next) {
 
 })
 
-router.get('/:licensePlate', async function(req, res, next) {
+router.get('/:licensePlate', passport.authenticate('bearer', { session: false }), async function(req, res, next) {
   try {
     
     let query = models.Vehicle.findOne({

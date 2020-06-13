@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
 const axios = require('axios')
 const moment = require('moment')
-const CODE_RESIDENT = "res"
-const CODE_OFICIAL = "of"
-const CODE_NO_RES = "no_res"
+const CODE_RESIDENT = 'res'
+const CODE_OFICIAL = 'of'
+const CODE_NO_RES = 'no_res'
+const TOKEN = 'DFnvkE5hKVK3c12'
 
 const departureSchema = new mongoose.Schema(
     {
@@ -33,7 +34,7 @@ departureSchema.methods.postActions = async function (validEntrance) {
     try {
 
         let licensePlate = this.licensePlate
-        let res = await axios.get(`http://vehicles:3000/vehicles/${licensePlate}`)
+        let res = await axios.get(`http://vehicles:3000/vehicles/${licensePlate}`, {headers: {'Authorization': `Bearer ${TOKEN}`}})
         let vehicle = res.data
 
         if (vehicle.type.code === CODE_RESIDENT) {

@@ -9,5 +9,5 @@ do
   echo "Waiting for database"
   sleep 2;
 done
-
+node /app/bin/createSystemUsers.js
 exec $cmd
