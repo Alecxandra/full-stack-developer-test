@@ -39,7 +39,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), async func
     // Se marca la entrada como no válida
     validEntrance.valid = false
     await validEntrance.save()
-    
+
     res.status(200).json(result)
 
   } catch (error) {

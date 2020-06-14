@@ -2,15 +2,15 @@ const { connectDb, models } = require('../models')
 
 let createSystemUsers = async function () {
   connectDb().then(async () => {
-      let query = models.System.findOne({token: 'DFnvkE5hKVK3c12'})
-      let systemUser = await query.exec()
+    let query = models.System.findOne({ token: 'DFnvkE5hKVK3c12' })
+    let systemUser = await query.exec()
 
-      if(!systemUser) {
-        let newSystemUser = new models.System({
-            token: 'DFnvkE5hKVK3c12'
-          })
-          await newSystemUser.save()
-      }
+    if (!systemUser) {
+      let newSystemUser = new models.System({
+        token: 'DFnvkE5hKVK3c12'
+      })
+      await newSystemUser.save()
+    }
   });
 }
 

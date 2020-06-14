@@ -39,7 +39,7 @@ router.get('/residents/generate-report', passport.authenticate('bearer', { sessi
 
     var fileData = residents.map(resident => {
       return {
-        licensePlate: resident.licensePlate, 
+        licensePlate: resident.licensePlate,
         parkingTime: resident.parkingTime,
         amountToPay: (resident.parkingTime * price).toFixed(2),
       }
@@ -53,7 +53,7 @@ router.get('/residents/generate-report', passport.authenticate('bearer', { sessi
       fileTable.cell('Cantidad a pagar', row.amountToPay)
       fileTable.newRow()
     })
-    
+
     await fs.writeFile('/tmp/residents_payment_report.txt', fileTable.toString());
 
     res.download('/tmp/residents_payment_report.txt')
