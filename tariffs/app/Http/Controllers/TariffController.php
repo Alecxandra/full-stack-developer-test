@@ -18,7 +18,9 @@ class TariffController extends Controller
     public function store(Request $request)
     {
         // Obtener los tipos de vehículos existentes
-        $response = Http::get('http://vehicles:3000/vehicle-types/'.$request->input('vehicletype'));
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer DFnvkE5hKVK3c12'
+        ])->get('http://vehicles:3000/vehicle-types/'.$request->input('vehicletype'));
 
         if ($response->ok()) {
             $tariff = Tariff::create($request->all());

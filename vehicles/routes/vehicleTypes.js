@@ -5,11 +5,11 @@ const { models } = require('../models');
 
 
 /* POST agregar tipo de vehículo */
-router.post('/', passport.authenticate('bearer', { session: false }), async function(req, res, next) {
+router.post('/', passport.authenticate('bearer', { session: false }), async function (req, res, next) {
   let { code, name } = req.body
-  
+
   try {
-    let vehicleType = new models.VehicleType({ 
+    let vehicleType = new models.VehicleType({
       code,
       name
     })
@@ -27,12 +27,12 @@ router.post('/', passport.authenticate('bearer', { session: false }), async func
 })
 
 /* GET lista tipo de vehículo */
-router.get('/', passport.authenticate('bearer', { session: false }), async function(req, res, next) {
+router.get('/', passport.authenticate('bearer', { session: false }), async function (req, res, next) {
   try {
 
     let query = models.VehicleType.find({})
     let vehicleTypes = await query.exec()
-    
+
     let result = vehicleTypes.map(vehicleType => {
       return {
         id: vehicleType._id,
@@ -48,8 +48,8 @@ router.get('/', passport.authenticate('bearer', { session: false }), async funct
   }
 })
 
-/* GET lista tipo de vehículo */
-router.get('/:code', passport.authenticate('bearer', { session: false }), async function(req, res, next) {
+/* GET obtener tipo de vehículo */
+router.get('/:code', passport.authenticate('bearer', { session: false }), async function (req, res, next) {
   try {
 
     let query = models.VehicleType.findOne({
@@ -60,11 +60,11 @@ router.get('/:code', passport.authenticate('bearer', { session: false }), async 
 
 
     if (!vehicleType) {
-      res.status(404).json({msg: "Vehicle type not found"})
+      res.status(404).json({ msg: "Vehicle type not found" })
       return
     }
-    
-    let result =  {
+
+    let result = {
       id: vehicleType._id,
       code: vehicleType.code,
       name: vehicleType.name,

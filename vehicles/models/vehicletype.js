@@ -1,17 +1,17 @@
 const mongoose = require('mongoose')
 
 const vehicleTypeSchema = new mongoose.Schema(
-    {
-        code: {
-            type: String,
-            unique: true,
-            required: true,
-        },
-        name: String,
+  {
+    code: {
+      type: String,
+      unique: true,
+      required: true,
     },
-    { timestamps: true },
+    name: String,
+  },
+  { timestamps: true },
 )
- 
+
 const VehicleType = mongoose.model('VehicleType', vehicleTypeSchema)
- 
+
 module.exports = VehicleType

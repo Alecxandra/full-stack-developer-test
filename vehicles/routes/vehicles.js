@@ -4,13 +4,13 @@ const passport = require('passport')
 const { models } = require('../models')
 
 /* POST agregar un vehículo */
-router.post('/', passport.authenticate('bearer', { session: false }), async function(req, res, next) {
+router.post('/', passport.authenticate('bearer', { session: false }), async function (req, res, next) {
   let { licensePlate, type } = req.body
 
   try {
 
     if (!type) {
-      res.status(400).json({msg: "Type is required"})
+      res.status(400).json({ msg: "Type is required" })
       return
     }
 
@@ -22,7 +22,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), async func
     let vehicleType = await query.exec()
 
     if (!vehicleType) {
-      res.status(404).json({msg: "Vehicle type not found"})
+      res.status(404).json({ msg: "Vehicle type not found" })
       return
     }
 
@@ -51,9 +51,9 @@ router.post('/', passport.authenticate('bearer', { session: false }), async func
 
 })
 
-router.get('/:licensePlate', passport.authenticate('bearer', { session: false }), async function(req, res, next) {
+router.get('/:licensePlate', passport.authenticate('bearer', { session: false }), async function (req, res, next) {
   try {
-    
+
     let query = models.Vehicle.findOne({
       licensePlate: req.params.licensePlate
     }).populate('type')
@@ -61,10 +61,10 @@ router.get('/:licensePlate', passport.authenticate('bearer', { session: false })
     let vehicle = await query.exec()
 
     if (!vehicle) {
-      res.status(404).json({msg: "Vehicle not found"})
+      res.status(404).json({ msg: "Vehicle not found" })
       return
     }
-    
+
     let result = {
       id: vehicle._id,
       licensePlate: vehicle.licensePlate,
